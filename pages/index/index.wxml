@@ -1,0 +1,4 @@
+<view class="container">
+  <text>{{motto}}</text>
+  <text>加载时间：{{time}}</text>
+</view>

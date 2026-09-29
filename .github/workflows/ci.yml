@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate JSON config files parse
+        run: |
+          node -e "const fs=require('fs');['app.json','project.config.json','sitemap.json','pages/index/index.json'].forEach(f=>{JSON.parse(fs.readFileSync(f,'utf8'));console.log('OK',f)});console.log('All JSON valid');"
+
+      # 可选：使用 miniprogram-ci 上传预览/体验版（需要密钥，默认关闭）
+      # - name: Upload preview (optional, requires secrets)
+      #   if: false
+      #   env:
+      #     APPID: ${{ secrets.WX_APPID }}
+      #     PRIVATE_KEY: ${{ secrets.WX_PRIVATE_KEY }}
+      #     CI_TOKEN: ${{ secrets.WX_CI_TOKEN }}
+      #   run: |
+      #     npm i -g miniprogram-ci
+      #     miniprogram-ci preview --appid "$APPID" --project "$PWD" --upload-key "$PRIVATE_KEY" --ci-token "$CI_TOKEN" --qr-output preview.png
